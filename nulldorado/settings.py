@@ -74,12 +74,32 @@ WSGI_APPLICATION = 'nulldorado.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+DATABASE_ROUTERS = ['nulldorado.router.dbRouter']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'nulldorado_data',
         'USER': "djangouser",
-        'PASSWORD': 'verysecurepassword'
+        'PASSWORD': 'verysecurepassword',
+        'HOST': '127.0.0.1',
+        'PORT': '13316'
+    },
+    'node02': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nulldorado_data',
+        'USER': "djangouser",
+        'PASSWORD': 'verysecurepassword',
+        'HOST': '127.0.0.1',
+        'PORT': '13326'
+    },
+    'node03': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nulldorado_data',
+        'USER': "djangouser",
+        'PASSWORD': 'verysecurepassword',
+        'HOST': '127.0.0.1',
+        'PORT': '13336'
     }
 }
 
