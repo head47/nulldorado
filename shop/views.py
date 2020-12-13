@@ -24,7 +24,6 @@ def catalogue(request):
         links[i] = list(subcategories)
     template = loader.get_template('shop/assort.html')
     context = {
-        #'categories': categories,
         'links': links
     }
     return HttpResponse(template.render(context, request))
