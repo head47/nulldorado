@@ -50,6 +50,7 @@
     <div class="card-body">
       <h5 class="card-title">{{ i.name }}</h5>
       <p class="card-text">{{ i.description }}</p>
+      <p>Цена: {{ i.price }} рублей</p>
       {% if i.available >= 5 %}
         <p class="card-text"><small class="text-muted" style="color: #00aa00!important;">Товара в наличии: {{ i.available }} шт.</small></p>
       {% elif i.available >= 1 %}
