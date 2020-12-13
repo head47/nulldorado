@@ -27,3 +27,13 @@ def catalogue(request):
         'links': links
     }
     return HttpResponse(template.render(context, request))
+
+def subcategory(request, id):
+    subcategory = list(Subcategory.objects.filter(id=id))[0]
+    items = list(Item.objects.filter(parent__id=subcategory.id))
+    template = loader.get_template('shop/subcategory.html')
+    context = {
+        'subcategory': subcategory,
+        'items': items,
+    }
+    return HttpResponse(template.render(context, request))
