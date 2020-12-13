@@ -52,24 +52,24 @@
 			</ol>
 			<div class="carousel-inner">
 				<div class="carousel-item active" data-interval="5000">
-					<img src="{% static 'img/placeholder1.jpg' %}" class="d-block w-100" alt="...">
+					<img src="{% get_static_prefix %}img/{{ showcase.0.picture }}" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
-                    <h5>Какой-то текст</h5>
-                    <p>Какой-то текст</p>
+                    <h5>{{ showcase.0.name }}</h5>
+                    <p>{{ showcase.0.description }}</p>
                     </div>
 				</div>
 				<div class="carousel-item" data-interval="5000">
-					<img src="{% static 'img/placeholder2.jpg' %}" class="d-block w-100" alt="...">
+					<img src="{% get_static_prefix %}img/{{ showcase.1.picture }}" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
-                    <h5>Какой-то текст</h5>
-                    <p>Какой-то текст</p>
+                    <h5>{{ showcase.1.name }}</h5>
+                    <p>{{ showcase.1.description }}</p>
                     </div>
 				</div>
                 <div class="carousel-item" data-interval="5000">
-					<img src="{% static 'img/placeholder1.jpg' %}" class="d-block w-100" alt="...">
+					<img src="{% get_static_prefix %}img/{{ showcase.2.picture }}" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
-                    <h5>Какой-то текст</h5>
-                    <p>Какой-то текст</p>
+                    <h5>{{ showcase.2.name }}</h5>
+                    <p>{{ showcase.2.description }}</p>
                     </div>
 				</div>
 			</div>
