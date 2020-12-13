@@ -1,0 +1,4 @@
+INSERT INTO nulldorado_data.shop_item (name,picture,description,price,parent_id,`new`,available) VALUES
+	 ('15.6" Ноутбук Acer Aspire 3 A315-22-48FX черный','AcerAspire5.jpeg','[1366x768, TN+film, AMD A4 9120e, 2 х 1.5 ГГц, RAM 4 ГБ, SSD 128 ГБ, Radeon R3 , Wi-Fi, UNIX-подобная]',30000.00,3,1,4),
+	 ('15.6" Ноутбук HP Laptop 15-dw1034ur серый','MSI-GL75-9SEK-086RU-5.jpg','[1920x1080, IPS, Intel Pentium Gold 6405U, 2 х 2.4 ГГц, RAM 4 ГБ, SSD 256 ГБ, Intel UHD , Wi-Fi, DOS]',35000.00,3,1,15),
+	 ('17.3" Ноутбук MSI GL75 Leopard 10SDK-213XRU черный','MSI-GL75-9SEK-086RU-4.jpg','[1366x768, TN+film, AMD A4 9120e, 2 х 1.5 ГГц, RAM 4 ГБ, SSD 128 ГБ, Radeon R3 , Wi-Fi, UNIX-подобная]',65000.00,3,1,0);
