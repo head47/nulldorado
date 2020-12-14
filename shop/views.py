@@ -7,6 +7,8 @@ from shop.models import Item, Category, Subcategory
 import random
 from collections import OrderedDict
 
+from .forms import SearchForm
+
 def index(request):
     newItems = list(Item.objects.filter(new=True))
     showcase = random.sample(newItems, 3)
@@ -23,8 +25,10 @@ def catalogue(request):
         subcategories = Subcategory.objects.filter(parent__id=i.id)
         links[i] = list(subcategories)
     template = loader.get_template('shop/assort.html')
+    form = SearchForm()
     context = {
-        'links': links
+        'links': links,
+        'form': form,
     }
     return HttpResponse(template.render(context, request))
 
@@ -35,5 +39,20 @@ def subcategory(request, id):
     context = {
         'subcategory': subcategory,
         'items': items,
+    }
+    return HttpResponse(template.render(context, request))
+
+def search(request):
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        query = str(form.cleaned_data['query'])
+        items = list(Item.objects.filter(name__icontains=query))
+    else:
+        query = ''
+        items = []
+    template = loader.get_template('shop/search.html')
+    context = {
+        'query': query,
+        'items': items
     }
     return HttpResponse(template.render(context, request))
