@@ -1,0 +1,21 @@
+.clamped-name {
+  height: 120px;
+  -webkit-line-clamp: 5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.clamped-desc {
+  height: 144px;
+  -webkit-line-clamp: 6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.itempadding {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 30px;
+}
