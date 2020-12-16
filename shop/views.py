@@ -7,7 +7,7 @@ from shop.models import Item, Category, Subcategory
 import random
 from collections import OrderedDict
 
-from .forms import SearchForm
+from .forms import SearchForm, OrderForm
 
 def index(request):
     cart_len = len(request.session.get('cart',[]))
@@ -40,11 +40,14 @@ def subcategory(request, id):
     cart_len = len(request.session.get('cart',[]))
     subcategory = list(Subcategory.objects.filter(id=id))[0]
     items = list(Item.objects.filter(parent__id=subcategory.id))
+    forms = {}
+    for i in items:
+        forms[i] = OrderForm(itemid=i.id)
     template = loader.get_template('shop/subcategory.html')
     context = {
         'subcategory': subcategory,
-        'items': items,
         'cart_len': cart_len,
+        'forms': forms,
     }
     return HttpResponse(template.render(context, request))
 
@@ -57,10 +60,13 @@ def search(request):
     else:
         query = ''
         items = []
+    forms = {}
+    for i in items:
+        forms[i] = OrderForm(itemid=i.id)
     template = loader.get_template('shop/search.html')
     context = {
         'query': query,
-        'items': items,
+        'forms': forms,
         'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
