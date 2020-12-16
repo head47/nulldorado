@@ -69,7 +69,7 @@
           {{ j.amount.label_tag }}
           {{ j.amount }}
           <p>Кол-во: <span id="val_{{ i.id }}"></span></p>
-          <p><input class="btn btn-primary" type="submit" value="Добавить в корзину"></p>
+          <p><input class="btn btn-primary" type="submit" value="Добавить в корзину" {% if i.available < 0 %}disabled{% endif %}></p>
         </form>
     </div>
     </div>
