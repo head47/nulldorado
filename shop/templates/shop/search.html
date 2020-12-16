@@ -64,8 +64,8 @@
       {% endif %}
         <form>
             <label for="Range">Добавление в корзину</label>
-<input type="range" class="custom-range" min="0" max="10" id="Range">
-<p>Кол-во: <span id="val"></span></p>
+            <input type="range" class="custom-range" min="0" max="10" id="Range_{{ i.id }}">
+            <p>Кол-во: <span id="val_{{ i.id }}"></span></p>
 <p><input class="btn btn-primary" type="submit" value="Добавить в корзину"></p>
             </form>
     </div>
@@ -80,13 +80,15 @@
   </div>
     </footer>
         <script>
-var slider = document.getElementById("Range");
-var output = document.getElementById("val");
-output.innerHTML = slider.value;
+        {% for i in items %}
+        var slider_{{ i.id }} = document.getElementById("Range_{{ i.id }}");
+        var output_{{ i.id }} = document.getElementById("val_{{ i.id }}");
+        output_{{ i.id }}.innerHTML = slider_{{ i.id }}.value;
 
-slider.oninput = function() {
-  output.innerHTML = this.value;
-}
+        slider_{{ i.id }}.oninput = function() {
+          output_{{ i.id }}.innerHTML = this.value;
+        }
+        {% endfor %}
 </script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
