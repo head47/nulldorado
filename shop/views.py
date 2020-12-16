@@ -87,15 +87,30 @@ def about(request):
     }
     return HttpResponse(template.render(context, request))
 
+def cart(request):
+    cart_ids = request.session.get('cart',OrderedDict())
+    cart_len = len(cart_ids)
+    cart = OrderedDict()
+    for i in cart_ids:
+        cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
+    template = loader.get_template('shop/cart.html')
+    context = {
+        'cart_len': cart_len,
+        'cart': cart,
+    }
+    return HttpResponse(template.render(context, request))
+
 def order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             cart = request.session.get('cart',OrderedDict())
-            print(cart)
             item = Item.objects.get(id=form.cleaned_data['id'])
             amount = form.cleaned_data['amount']
-            cart[item.id] = amount
+            if amount == 0:
+                cart.pop(str(item.id), None)
+            else:
+                cart[item.id] = amount
             request.session['cart'] = cart
             request.session.modified = True
     return HttpResponseRedirect('/cart')

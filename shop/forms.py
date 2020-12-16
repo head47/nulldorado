@@ -11,4 +11,4 @@ class OrderForm(forms.Form):
             itemid = 0
         super(OrderForm, self).__init__(*args, **kwargs)
         self.fields['id'] = forms.IntegerField(label='', widget=forms.HiddenInput(), initial=itemid)
-        self.fields['amount'] = forms.IntegerField(label='Добавление в корзину', widget=forms.NumberInput(attrs={'type':'range','class':'custom-range','min':1,'max':10,'id':'Range_'+str(itemid)}), initial=1)
+        self.fields['amount'] = forms.IntegerField(label='Добавление в корзину', widget=forms.NumberInput(attrs={'type':'range','class':'custom-range','min':0,'max':10,'id':'Range_'+str(itemid)}), initial=1)
