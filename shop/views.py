@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
 from shop.models import Item, Category, Subcategory
@@ -86,3 +86,15 @@ def about(request):
         'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
+
+def order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            cart = request.session.get('cart',dict())
+            item = Item.objects.get(id=form.cleaned_data['id'])
+            amount = form.cleaned_data['amount']
+            cart['item.id'] = amount
+            request.session['cart'] = cart
+            request.session.modified = True
+    return HttpResponseRedirect('/cart')
