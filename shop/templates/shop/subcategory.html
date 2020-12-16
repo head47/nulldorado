@@ -65,6 +65,7 @@
         <p class="card-text"><small class="text-muted" style="color: #aa0000!important;">Товара нет в наличии</small></p>
       {% endif %}
         <form action="/order" method="POST">
+          {% csrf_token %}
           {{ j.id }}
           {{ j.amount.label_tag }}
           {{ j.amount }}
