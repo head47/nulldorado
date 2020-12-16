@@ -61,3 +61,8 @@ def contacts(request):
     template = loader.get_template('shop/contacts.html')
     context = {}
     return HttpResponse(template.render(context, request))
+
+def about(request):
+    template = loader.get_template('shop/about.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
