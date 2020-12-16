@@ -10,15 +10,18 @@ from collections import OrderedDict
 from .forms import SearchForm
 
 def index(request):
+    cart_len = len(request.session.get('cart',[]))
     newItems = list(Item.objects.filter(new=True))
     showcase = random.sample(newItems, 3)
     template = loader.get_template('shop/index.html')
     context = {
         'showcase': showcase,
+        'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
 
 def catalogue(request):
+    cart_len = len(request.session.get('cart',[]))
     links = OrderedDict()
     categories = list(Category.objects.all())
     for i in categories:
@@ -29,20 +32,24 @@ def catalogue(request):
     context = {
         'links': links,
         'form': form,
+        'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
 
 def subcategory(request, id):
+    cart_len = len(request.session.get('cart',[]))
     subcategory = list(Subcategory.objects.filter(id=id))[0]
     items = list(Item.objects.filter(parent__id=subcategory.id))
     template = loader.get_template('shop/subcategory.html')
     context = {
         'subcategory': subcategory,
         'items': items,
+        'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
 
 def search(request):
+    cart_len = len(request.session.get('cart',[]))
     form = SearchForm(request.GET)
     if form.is_valid():
         query = str(form.cleaned_data['query'])
@@ -53,16 +60,23 @@ def search(request):
     template = loader.get_template('shop/search.html')
     context = {
         'query': query,
-        'items': items
+        'items': items,
+        'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))
 
 def contacts(request):
+    cart_len = len(request.session.get('cart',[]))
     template = loader.get_template('shop/contacts.html')
-    context = {}
+    context = {
+        'cart_len': cart_len,
+    }
     return HttpResponse(template.render(context, request))
 
 def about(request):
+    cart_len = len(request.session.get('cart',[]))
     template = loader.get_template('shop/about.html')
-    context = {}
+    context = {
+        'cart_len': cart_len,
+    }
     return HttpResponse(template.render(context, request))
