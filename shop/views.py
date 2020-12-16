@@ -94,7 +94,7 @@ def order(request):
             cart = request.session.get('cart',dict())
             item = Item.objects.get(id=form.cleaned_data['id'])
             amount = form.cleaned_data['amount']
-            cart['item.id'] = amount
+            cart[item.id] = amount
             request.session['cart'] = cart
             request.session.modified = True
     return HttpResponseRedirect('/cart')
