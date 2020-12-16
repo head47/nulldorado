@@ -91,7 +91,8 @@ def order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            cart = request.session.get('cart',dict())
+            cart = request.session.get('cart',OrderedDict())
+            print(cart)
             item = Item.objects.get(id=form.cleaned_data['id'])
             amount = form.cleaned_data['amount']
             cart[item.id] = amount
