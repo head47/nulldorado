@@ -55,7 +55,7 @@
                 <li data-target="#slider" data-slide-to="2"></li>
 			</ol>
 			<div class="carousel-inner">
-				<div class="carousel-item active" data-interval="5000">
+				<!-- <div class="carousel-item active" data-interval="5000">
 					<img src="{% get_static_prefix %}img/{{ showcase.0.picture }}" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
                     <h5>{{ showcase.0.name }}</h5>
@@ -76,6 +76,16 @@
                     <p>{{ showcase.2.description }}</p>
                     </div>
 				</div>
+      -->
+        <div class="carousel-item active" data-interval="5000">
+          <img src="{% static 'img/carousel0.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-interval="5000">
+          <img src="{% static 'img/carousel1.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-interval="5000">
+          <img src="{% static 'img/carousel2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
 			</div>
 		</div>
 	</div>
