@@ -1,5 +1,5 @@
 INSERT INTO nulldorado_data.shop_category (name,picture) VALUES
-	 ('Компьютеры и ноутбуки','computer.jpg'),
-	 ('Смартфоны и планшеты','gnote8-4.jpg'),
-	 ('Бытовая техника','appliance.jpg'),
-	 ('Аксессуары','mouse.jpg');
+	 ('Компьютеры и ноутбуки','categ-pcnnb.jpg'),
+	 ('Смартфоны и планшеты','categ-phntb.jpg'),
+	 ('Бытовая техника','categ-appliance.jpg'),
+	 ('Аксессуары и периферия','categ-access.jpg');

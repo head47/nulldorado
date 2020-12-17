@@ -10,4 +10,5 @@ INSERT INTO nulldorado_data.shop_subcategory (name,parent_id) VALUES
 	 ('Клавиатуры',12),
 	 ('Компьютерные мыши',12);
 INSERT INTO nulldorado_data.shop_subcategory (name,parent_id) VALUES
-	 ('Гарнитура',12);
+	 ('Гарнитура',12),
+	 ('Чехлы',6);
