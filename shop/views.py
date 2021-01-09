@@ -3,11 +3,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
-from shop.models import Item, Category, Subcategory
+from shop.models import Item, Category, Subcategory, Order
 import random
 from collections import OrderedDict
 
-from .forms import SearchForm, OrderForm
+from .forms import SearchForm, OrderForm, SubmitOrderForm
 
 def index(request):
     cart_len = len(request.session.get('cart',[]))
@@ -114,3 +114,36 @@ def order(request):
             request.session['cart'] = cart
             request.session.modified = True
     return HttpResponseRedirect('/cart')
+
+def submit_order(request):
+    if request.method == 'POST':
+        form = SubmitOrderForm(request.POST)
+        if form.is_valid():
+            cart = request.session.get('cart',OrderedDict())
+            Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart)
+            for item_id, item_cnt in cart.items():
+                item = Item.objects.get(id=item_id)
+                item.available = item.available - item_cnt if item_cnt <= item.available else 0
+                item.save()
+            request.session['cart'] = {}
+            request.session.modified = True
+            template = loader.get_template('shop/submit_order.html')
+            context = {
+                'cart_len': 0,
+                'cart': {},
+            }
+            return HttpResponse(template.render(context, request))
+        
+        #code identical to card
+        cart_ids = request.session.get('cart',OrderedDict())
+        cart_len = len(cart_ids)
+        cart = OrderedDict()
+        for i in cart_ids:
+            cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
+        template = loader.get_template('shop/cart.html')
+        context = {
+            'cart_len': cart_len,
+            'cart': cart,
+            'form':form
+        }
+        return HttpResponse(template.render(context, request))
