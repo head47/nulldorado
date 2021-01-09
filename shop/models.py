@@ -25,5 +25,5 @@ class Item(models.Model):
 
 class Order(models.Model):
     phone = models.CharField(max_length=16)
-    email = models.EmailField()
-    items = models.JSONField()
+    email = models.EmailField(max_length=64)
+    items = models.JSONField(max_length=128)
