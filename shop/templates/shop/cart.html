@@ -64,11 +64,9 @@
             <p class="card-text clamped-desc">{{ i.description }}</p>
             <p>Цена: {{ i.price }} рублей</p>
             {% if i.available >= 5 %}
-            <p class="card-text"><small class="text-muted" style="color: #00aa00!important;">Товара в наличии: {{
-                i.available }} шт.</small></p>
+            <p class="card-text"><small class="text-muted" style="color: #00aa00!important;">Товара в наличии: {{ i.available }} шт.</small></p>
             {% elif i.available >= 1 %}
-            <p class="card-text"><small class="text-muted" style="color: #aaaa00!important;">Товара в наличии: {{
-                i.available }} шт.</small></p>
+            <p class="card-text"><small class="text-muted" style="color: #aaaa00!important;">Товара в наличии: {{ i.available }} шт.</small></p>
             {% else %}
             <p class="card-text"><small class="text-muted" style="color: #aa0000!important;">Товара нет в
                 наличии</small></p>
@@ -143,10 +141,10 @@
       {% for i, j in cart.items %}
       var slider_{{ i.id }} = document.getElementById("Range_{{ i.id }}");
       var output_{{ i.id }} = document.getElementById("val_{{ i.id }}");
-      output_{ { i.id } }.innerHTML = slider_{ { i.id } }.value;
+      output_{{ i.id }}.innerHTML = slider_{{ i.id }}.value;
 
-      slider_{ { i.id } }.oninput = function () {
-        output_{ { i.id } }.innerHTML = this.value;
+      slider_{{ i.id }}.oninput = function () {
+        output_{{ i.id }}.innerHTML = this.value;
       }
       {% endfor %}
     </script>
