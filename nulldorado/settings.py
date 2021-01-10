@@ -84,7 +84,8 @@ DATABASES = {
         'USER': "djangouser",
         'PASSWORD': 'verysecurepassword',
         'HOST': '127.0.0.1',
-        'PORT': '13316'
+        'PORT': '13316',
+        'ATOMIC_REQUESTS': True
     },
     'node02': {
         'ENGINE': 'django.db.backends.mysql',
@@ -92,7 +93,8 @@ DATABASES = {
         'USER': "djangouser",
         'PASSWORD': 'verysecurepassword',
         'HOST': '127.0.0.1',
-        'PORT': '13326'
+        'PORT': '13326',
+        'ATOMIC_REQUESTS': True
     },
     'node03': {
         'ENGINE': 'django.db.backends.mysql',
@@ -100,7 +102,8 @@ DATABASES = {
         'USER': "djangouser",
         'PASSWORD': 'verysecurepassword',
         'HOST': '127.0.0.1',
-        'PORT': '13336'
+        'PORT': '13336',
+        'ATOMIC_REQUESTS': True
     }
 }
 

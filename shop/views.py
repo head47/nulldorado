@@ -9,6 +9,8 @@ from collections import OrderedDict
 
 from .forms import SearchForm, OrderForm, SubmitOrderForm
 
+from django.db import transaction
+
 def index(request):
     cart_len = len(request.session.get('cart',[]))
     newItems = list(Item.objects.filter(new=True))
@@ -118,22 +120,27 @@ def order(request):
 def submit_order(request):
     if request.method == 'POST':
         form = SubmitOrderForm(request.POST)
-        if form.is_valid():
-            cart = request.session.get('cart',OrderedDict())
-            Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart)
+        cart = request.session.get('cart',OrderedDict())
+        with transaction.atomic():
+            items = []
+            ok = True
             for item_id, item_cnt in cart.items():
-                item = Item.objects.get(id=item_id)
-                item.available = item.available - item_cnt if item_cnt <= item.available else 0
-                item.save()
-            request.session['cart'] = {}
-            request.session.modified = True
-            template = loader.get_template('shop/submit_order.html')
-            context = {
-                'cart_len': 0,
-                'cart': {},
-            }
-            return HttpResponse(template.render(context, request))
-        
+                items.append([Item.objects.select_for_update().filter(id=item_id)[0],item_cnt])
+                ok = ok and items[-1][0].available >= item_cnt
+            if ok and form.is_valid():
+                Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,order_status=Order.OrderStatus.NEW)
+                for item in items:
+                    item[0].available -= item[1]
+                    item[0].save()
+                request.session['cart'] = {}
+                request.session.modified = True
+                template = loader.get_template('shop/submit_order.html')
+                context = {
+                    'cart_len': 0,
+                    'cart': {},
+                }
+                return HttpResponse(template.render(context, request))
+            
         #code identical to card
         cart_ids = request.session.get('cart',OrderedDict())
         cart_len = len(cart_ids)
@@ -141,6 +148,8 @@ def submit_order(request):
         for i in cart_ids:
             cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
         template = loader.get_template('shop/cart.html')
+        if not ok:
+            form.add_error(None,"Нельзя положить в корзину больше экземпляров, чем есть на складе")
         context = {
             'cart_len': cart_len,
             'cart': cart,
