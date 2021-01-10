@@ -14,8 +14,10 @@ def index(request):
     newItems = list(Item.objects.filter(new=True))
     showcase = random.sample(newItems, 3)
     template = loader.get_template('shop/index.html')
+    form = SearchForm()
     context = {
         'showcase': showcase,
+        'form': form,
         'cart_len': cart_len,
     }
     return HttpResponse(template.render(context, request))

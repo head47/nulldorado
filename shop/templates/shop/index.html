@@ -21,13 +21,16 @@
             width: 100%;
             z-index: 100;
         }
+        .container{
+            margin-top: 40px;
+        }
     </style>
     <body>
         <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="/" id="main">
             <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-            Нульдорадо
+            НУЛЬДОРАДО
             </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -64,7 +67,22 @@
 			</div>
 		</div>
 	</div>
-        <div class="container slider">
+    <div class="container">
+		<div class="row">
+			<div class="col">
+                <form action="/search" method="GET">
+				    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <input type="submit" class="btn btn-outline-secondary" type="button" id="button-addon1" value="Поиск по названию"></button>
+                        </div>
+                        {{ form }}
+                        <!-- <input type="text" class="form-control" placeholder="" aria-describedby="button-addon1"> -->
+                    </div>
+                </form>
+			</div>
+		</div>
+	</div>
+    <div class="container slider">
 		<div id="slider" class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
 				<li data-target="#slider" data-slide-to="0" class="active"></li>
