@@ -9,6 +9,14 @@
   <title>Главная страница</title>
 </head>
 <style>
+  .footer {
+            color: ghostwhite;
+            bottom: 0;
+            display: inline-block;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
 </style>
 
 <body>
@@ -134,9 +142,13 @@
     </div>
   </div>
 
-  <footer class="page-footer">
-    <div class="footer-copyright text-center py-3">© 2020
+  <div class="footer">
+    <div class="page-footer bg-dark">
+        <div class="footer-copyright text-center py-3">
+            © 2020
+        </div>
     </div>
+  </div>
     <script>
       {% for i, j in cart.items %}
       var slider_{{ i.id }} = document.getElementById("Range_{{ i.id }}");
@@ -148,7 +160,6 @@
       }
       {% endfor %}
     </script>
-  </footer>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>
