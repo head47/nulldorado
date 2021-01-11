@@ -145,8 +145,7 @@ def submit_order_transaction(db_name:str,cart,form):
         for item,item_cnt in items_for_update:
             item.available -= item_cnt
             item.save(using=db_name)
-        return True
-    return False
+    return item_cnt_ok
 
 def submit_order(request):
     if request.method == 'POST':
@@ -154,7 +153,7 @@ def submit_order(request):
         cart = request.session.get('cart',OrderedDict())
         cart_empty = len(cart) == 0
         item_cnt_ok = True
-        if form.is_valid() and not cart_empty:
+        if not cart_empty and form.is_valid():
             db_name = get_rnd_up_db()
             attempts = 0
             while attempts < 3:
