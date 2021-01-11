@@ -89,20 +89,26 @@ def about(request):
     }
     return HttpResponse(template.render(context, request))
 
-def cart(request):
+
+def _render_cart_default(request,context:dict):
     cart_ids = request.session.get('cart',OrderedDict())
     cart_len = len(cart_ids)
     cart = OrderedDict()
     for i in cart_ids:
-        cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
+        item = Item.objects.get(id=i)
+        if (cart_ids[i] > 0 and item.available > 0):
+            cart[item] = [cart_ids[i], OrderForm(itemid=i)]
     template = loader.get_template('shop/cart.html')
     total_sum = sum(item.price * cart_ids[str(item.id)] for item in cart)
-    context = {
+    context.update( {
         'cart_len': cart_len,
         'cart': cart,
         'total_sum' : total_sum
-    }
+    })
     return HttpResponse(template.render(context, request))
+
+def cart(request):
+    return _render_cart_default(request,{})
 
 def order(request):
     if request.method == 'POST':
@@ -116,57 +122,54 @@ def order(request):
             else:
                 cart[item.id] = amount
             request.session['cart'] = cart
-            
             request.session.modified = True
     return HttpResponseRedirect('/cart')
 
-@transaction.atomic
+def submit_order_transaction(db_name:str,cart,form):
+    ids = cart.keys()
+    items_for_update = list(Item.objects.using(db_name).select_for_update().filter(id__in=ids))
+    items_for_update = list(zip(items_for_update,cart.values()))
+    item_cnt_ok = True
+    for item,item_cnt in items_for_update:
+        item_cnt_ok = item_cnt_ok and item.available >= item_cnt
+    if item_cnt_ok:
+        order = Order.objects.create(
+            phone=form.cleaned_data['number'],
+            email=form.cleaned_data['email'],
+            items=cart,
+            address=form.cleaned_data['address'],
+            order_status=Order.OrderStatus.NEW)
+        order.save(using=db_name)
+        for item,item_cnt in items_for_update:
+            item.available -= item_cnt
+            item.save(using=db_name)
+        return True
+    return False
+
 def submit_order(request):
     if request.method == 'POST':
         form = SubmitOrderForm(request.POST)
         cart = request.session.get('cart',OrderedDict())
-        ok = True
-        if form.is_valid():
+        cart_empty = len(cart) == 0
+        item_cnt_ok = True
+        if form.is_valid() and not cart_empty:
             db_name = get_rnd_up_db()
             with transaction.atomic(using=db_name):
-                ids = cart.keys()
-                items_for_update = list(Item.objects.using(db_name).select_for_update().filter(id__in=ids))
-                items_for_update = list(zip(items_for_update,cart.values()))
-                for item,item_cnt in items_for_update:
-                    ok = ok and item.available >= item_cnt
-                if ok:
-                    order = Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,address=form.cleaned_data['address'],order_status=Order.OrderStatus.NEW)
-                    order.save(using=db_name)
-                    for item,item_cnt in items_for_update:
-                        item.available -= item_cnt
-                        item.save(using=db_name)
-                    request.session['cart'] = {}
-                    request.session.modified = True
-                    template = loader.get_template('shop/submit_order.html')
-                    context = {
-                        'cart_len': 0,
-                        'cart': {},
-                        'total_sum': 0
-                    }
-                    return HttpResponse(template.render(context, request))
-
-            
-        #code identical to card
-        cart_ids = request.session.get('cart',OrderedDict())
-        cart_len = len(cart_ids)
-        cart = OrderedDict()
-        for i in cart_ids:
-            cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
-        total_sum = sum(item.price * cart_ids[str(item.id)] for item in cart)
-        template = loader.get_template('shop/cart.html')
-        if not ok:
-            form.add_error(None,"Нельзя положить в корзину больше экземпляров, чем есть на складе")
-        context = {
-            'cart_len': cart_len,
-            'cart': cart,
-            'form':form,
-            'total_sum':total_sum
-        }
-        return HttpResponse(template.render(context, request))
+                item_cnt_ok = submit_order_transaction(db_name,cart,form)
+            if item_cnt_ok:
+                request.session['cart'] = {}
+                request.session.modified = True
+                template = loader.get_template('shop/submit_order.html')
+                context = {
+                    'cart_len': 0,
+                    'cart': {},
+                    'total_sum': 0
+                }
+                return HttpResponse(template.render(context, request))
+        if not item_cnt_ok:
+            form.add_error(None,'Число товаров в корзине не должно превышать складские запасы.')
+        if cart_empty:
+            form.add_error(None,'Корзина пуста. Обновите страницу.')
+        return _render_cart_default(request,{'form':form})
 
 
