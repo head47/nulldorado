@@ -9,7 +9,7 @@ from collections import OrderedDict
 
 from .forms import SearchForm, OrderForm, SubmitOrderForm
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 
 def index(request):
     cart_len = len(request.session.get('cart',[]))
@@ -117,29 +117,35 @@ def order(request):
             request.session.modified = True
     return HttpResponseRedirect('/cart')
 
+@transaction.atomic
 def submit_order(request):
     if request.method == 'POST':
         form = SubmitOrderForm(request.POST)
         cart = request.session.get('cart',OrderedDict())
-        with transaction.atomic():
-            items = []
-            ok = True
-            for item_id, item_cnt in cart.items():
-                items.append([Item.objects.select_for_update().filter(id=item_id)[0],item_cnt])
-                ok = ok and items[-1][0].available >= item_cnt
-            if ok and form.is_valid():
-                Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,order_status=Order.OrderStatus.NEW)
-                for item in items:
-                    item[0].available -= item[1]
-                    item[0].save()
-                request.session['cart'] = {}
-                request.session.modified = True
-                template = loader.get_template('shop/submit_order.html')
-                context = {
-                    'cart_len': 0,
-                    'cart': {},
-                }
-                return HttpResponse(template.render(context, request))
+        ok = True
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    ids = cart.keys()
+                    items_for_update = list(Item.objects.select_for_update().filter(id__in=ids))
+                    items_for_update = list(zip(items_for_update,cart.values()))
+                    for item,item_cnt in items_for_update:
+                        ok = ok and item.available >= item_cnt
+                    if ok:
+                        Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,order_status=Order.OrderStatus.NEW)
+                        for item,item_cnt in items_for_update:
+                            item.available -= item_cnt
+                            item.save()
+                        request.session['cart'] = {}
+                        request.session.modified = True
+                        template = loader.get_template('shop/submit_order.html')
+                        context = {
+                            'cart_len': 0,
+                            'cart': {},
+                        }
+                        return HttpResponse(template.render(context, request))
+            except IntegrityError:
+                print('integrity error')
             
         #code identical to card
         cart_ids = request.session.get('cart',OrderedDict())
@@ -156,3 +162,5 @@ def submit_order(request):
             'form':form
         }
         return HttpResponse(template.render(context, request))
+
+

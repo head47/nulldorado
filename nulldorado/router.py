@@ -35,7 +35,8 @@ class dbRouter:
             choice = random.choice(dblist)
             if len(dblist) == 1:
                 break
-        return choice
+        #return choice
+        return 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
         db_set = {'default', 'node02', 'node03'}
