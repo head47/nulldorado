@@ -35,6 +35,7 @@ class Order(models.Model):
 
     phone = models.CharField(max_length=16)
     email = models.EmailField(max_length=64)
+    address = models.TextField(max_length=256,default='not_stated')
     items = models.JSONField(max_length=128)
 
     order_status = models.CharField(

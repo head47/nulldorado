@@ -8,7 +8,7 @@ import random
 from collections import OrderedDict
 
 from .forms import SearchForm, OrderForm, SubmitOrderForm
-
+from nulldorado.router import get_rnd_up_db
 from django.db import transaction, IntegrityError
 
 def index(request):
@@ -96,9 +96,11 @@ def cart(request):
     for i in cart_ids:
         cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
     template = loader.get_template('shop/cart.html')
+    total_sum = sum(item.price * cart_ids[str(item.id)] for item in cart)
     context = {
         'cart_len': cart_len,
         'cart': cart,
+        'total_sum' : total_sum
     }
     return HttpResponse(template.render(context, request))
 
@@ -114,6 +116,7 @@ def order(request):
             else:
                 cart[item.id] = amount
             request.session['cart'] = cart
+            
             request.session.modified = True
     return HttpResponseRedirect('/cart')
 
@@ -124,28 +127,29 @@ def submit_order(request):
         cart = request.session.get('cart',OrderedDict())
         ok = True
         if form.is_valid():
-            try:
-                with transaction.atomic():
-                    ids = cart.keys()
-                    items_for_update = list(Item.objects.select_for_update().filter(id__in=ids))
-                    items_for_update = list(zip(items_for_update,cart.values()))
+            db_name = get_rnd_up_db()
+            with transaction.atomic(using=db_name):
+                ids = cart.keys()
+                items_for_update = list(Item.objects.using(db_name).select_for_update().filter(id__in=ids))
+                items_for_update = list(zip(items_for_update,cart.values()))
+                for item,item_cnt in items_for_update:
+                    ok = ok and item.available >= item_cnt
+                if ok:
+                    order = Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,address=form.cleaned_data['address'],order_status=Order.OrderStatus.NEW)
+                    order.save(using=db_name)
                     for item,item_cnt in items_for_update:
-                        ok = ok and item.available >= item_cnt
-                    if ok:
-                        Order.objects.create(phone=form.cleaned_data['number'],email=form.cleaned_data['email'],items=cart,order_status=Order.OrderStatus.NEW)
-                        for item,item_cnt in items_for_update:
-                            item.available -= item_cnt
-                            item.save()
-                        request.session['cart'] = {}
-                        request.session.modified = True
-                        template = loader.get_template('shop/submit_order.html')
-                        context = {
-                            'cart_len': 0,
-                            'cart': {},
-                        }
-                        return HttpResponse(template.render(context, request))
-            except IntegrityError:
-                print('integrity error')
+                        item.available -= item_cnt
+                        item.save(using=db_name)
+                    request.session['cart'] = {}
+                    request.session.modified = True
+                    template = loader.get_template('shop/submit_order.html')
+                    context = {
+                        'cart_len': 0,
+                        'cart': {},
+                        'total_sum': 0
+                    }
+                    return HttpResponse(template.render(context, request))
+
             
         #code identical to card
         cart_ids = request.session.get('cart',OrderedDict())
@@ -153,13 +157,15 @@ def submit_order(request):
         cart = OrderedDict()
         for i in cart_ids:
             cart[Item.objects.get(id=i)] = [cart_ids[i], OrderForm(itemid=i)]
+        total_sum = sum(item.price * cart_ids[str(item.id)] for item in cart)
         template = loader.get_template('shop/cart.html')
         if not ok:
             form.add_error(None,"Нельзя положить в корзину больше экземпляров, чем есть на складе")
         context = {
             'cart_len': cart_len,
             'cart': cart,
-            'form':form
+            'form':form,
+            'total_sum':total_sum
         }
         return HttpResponse(template.render(context, request))
 

@@ -16,27 +16,23 @@ def dbUp(database_name):
         print('Database down:',database_name)
         return False
 
+def get_rnd_up_db():
+    dblist = ['default', 'node02', 'node03']
+    choice = random.choice(dblist)
+    while not dbUp(choice):
+        dblist.remove(choice)
+        choice = random.choice(dblist)
+        if len(dblist) == 1:
+            break
+    return choice
+
 class dbRouter:
     def db_for_read(self, model, **hints):
-        dblist = ['default', 'node02', 'node03']
-        choice = random.choice(dblist)
-        while not dbUp(choice):
-            dblist.remove(choice)
-            choice = random.choice(dblist)
-            if len(dblist) == 1:
-                break
-        return choice
+        return get_rnd_up_db()
 
     def db_for_write(self, model, **hints):
-        dblist = ['default', 'node02', 'node03']
-        choice = random.choice(dblist)
-        while not dbUp(choice):
-            dblist.remove(choice)
-            choice = random.choice(dblist)
-            if len(dblist) == 1:
-                break
-        #return choice
-        return 'default'
+        return get_rnd_up_db()
+
 
     def allow_relation(self, obj1, obj2, **hints):
         db_set = {'default', 'node02', 'node03'}

@@ -18,3 +18,4 @@ class SubmitOrderForm(forms.Form):
     number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', required=True,label='Номер телефона',max_length=16,
         error_messages={'invalid': _("Формат номера телефона не верен."),'required': _("Номер телефона обязателен.")})
     email = forms.EmailField(max_length=64,required=True,label='e-mail')
+    address = forms.CharField(label='Адрес доставки',required=True,max_length=256)

@@ -92,6 +92,9 @@
       </a>
     </p>
     <div class="collapse show" id="collapseExample">
+      <p>
+        Сумма заказа: {{ total_sum }} руб.
+      </p>
       <div class="card card-body">
         <form action="/submit_order" method="POST">
           {% csrf_token %}
@@ -107,6 +110,12 @@
                   <div class="input-group-text">@</div>
                 </div>
                 <input type="text" class="form-control" name="email" placeholder="Адрес электронной почты">
+              </div>
+            </div>
+            <div class="col-auto">
+              <label class="sr-only" for="address">Адрес</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" name="address" placeholder="Адрес доставки">
               </div>
             </div>
             <div class="col-auto">
