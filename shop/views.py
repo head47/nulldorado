@@ -11,6 +11,8 @@ from .forms import SearchForm, OrderForm, SubmitOrderForm
 from nulldorado.router import get_rnd_up_db
 from django.db import transaction, IntegrityError
 
+from time import sleep
+
 def index(request):
     cart_len = len(request.session.get('cart',[]))
     newItems = list(Item.objects.filter(new=True))
@@ -154,14 +156,16 @@ def submit_order(request):
         item_cnt_ok = True
         if form.is_valid() and not cart_empty:
             db_name = get_rnd_up_db()
-            with transaction.atomic(using=db_name):
-                attempts = 0
-                while attempts < 3:
-                    try:
+            attempts = 0
+            while attempts < 3:
+                try:
+                    with transaction.atomic(using=db_name):
                         item_cnt_ok = submit_order_transaction(db_name,cart,form)
-                        attempts = 3
-                    except Exception:
-                        attempts += 1
+                    attempts = 10
+                except Exception:
+                    attempts += 1
+                    print('=======deadlock==========',attempts)
+                    sleep(0.4)
             if item_cnt_ok:
                 request.session['cart'] = {}
                 request.session.modified = True
