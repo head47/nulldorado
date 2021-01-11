@@ -8,12 +8,26 @@
         <title>Результаты поиска</title>
     </head>
     <style>
+      body {
+            background-image: url("https://cdn.rbt.ru/images/wallpapers/wallpapers.jpeg");
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+        }
+        .footer {
+            color: ghostwhite;
+            bottom: 0;
+            display: inline-block;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
     </style>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="/" id="main">
             <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-            Нульдорадо
+            НУЛЬДОРАДО
             </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -41,7 +55,7 @@
 		<div class="row">
 			<div class="col">
 				<div class="single-post">
-					<h1 class="post-category">Результаты поиска: {{ query }}</h1>
+					<h1 class="post-category" style="font-size: 32pt;">Результаты поиска: {{ query }}</h1>
 				</div>
 			</div>
 		</div>
@@ -80,10 +94,13 @@
 		  </div>
 	   </div>
 
-    <footer class="page-footer">
-  <div class="footer-copyright text-center py-3">© 2020
+     <div class="footer">
+      <div class="page-footer bg-dark">
+          <div class="footer-copyright text-center py-3">
+              © 2020
+          </div>
+      </div>
   </div>
-    </footer>
         <script>
         {% for i, j in forms.items %}
         var slider_{{ i.id }} = document.getElementById("Range_{{ i.id }}");
