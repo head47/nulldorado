@@ -155,7 +155,13 @@ def submit_order(request):
         if form.is_valid() and not cart_empty:
             db_name = get_rnd_up_db()
             with transaction.atomic(using=db_name):
-                item_cnt_ok = submit_order_transaction(db_name,cart,form)
+                attempts = 0
+                while attempts < 3:
+                    try:
+                        item_cnt_ok = submit_order_transaction(db_name,cart,form)
+                        attempts = 3
+                    except Exception:
+                        attempts += 1
             if item_cnt_ok:
                 request.session['cart'] = {}
                 request.session.modified = True
