@@ -24,9 +24,9 @@ with open(Path(BASE_DIR, 'secret')) as f:
     SECRET_KEY = f.read()[:-1]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]', '.nulldorado.tk']
 
 
 # Application definition
