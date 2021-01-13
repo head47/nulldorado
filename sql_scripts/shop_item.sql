@@ -1,6 +1,6 @@
 INSERT INTO nulldorado_data.shop_item (name,picture,description,price,parent_id,`new`,available) VALUES
 	 ('15.6" Ноутбук Acer Aspire 3 A315-22-48FX черный','AcerAspire5.jpeg','[1366x768, TN+film, AMD A4 9120e, 2 х 1.5 ГГц, RAM 4 ГБ, SSD 128 ГБ, Radeon R3 , Wi-Fi, UNIX-подобная]',30000.00,3,1,4),
-	 ('15.6" Ноутбук HP Laptop 15-dw1034ur серый','MSI-GL75-9SEK-086RU-5.jpg','[1920x1080, IPS, Intel Pentium Gold 6405U, 2 х 2.4 ГГц, RAM 4 ГБ, SSD 256 ГБ, Intel UHD , Wi-Fi, DOS]',35000.00,3,1,15),
+	 ('15.6" Ноутбук HP Laptop 15-dw1034ur серый','orig.png','[1920x1080, IPS, Intel Pentium Gold 6405U, 2 х 2.4 ГГц, RAM 4 ГБ, SSD 256 ГБ, Intel UHD , Wi-Fi, DOS]',35000.00,3,1,15),
 	 ('17.3" Ноутбук MSI GL75 Leopard 10SDK-213XRU черный','MSI-GL75-9SEK-086RU-4.jpg','[1366x768, TN+film, AMD A4 9120e, 2 х 1.5 ГГц, RAM 4 ГБ, SSD 128 ГБ, Radeon R3 , Wi-Fi, UNIX-подобная]',65000.00,3,1,0),
 	 ('Смартфон Apple iPhone 11 64GB Black (MHDA3RU/A)','iphone_11_black.jpg','[A13 Bionic, BLACK, ROM 64 GB, Liquid Retina HD, Основная камера МПикс 12/12, SIM карта 1 nano-SIM]',54900.00,12,1,11),
 	 ('Смартфон Xiaomi Redmi 9A','redmi_9a_gray.jpg','[Mediatek Helio G25 2 ГГц, GRAY,RAM 2 GB, ROM 32 GB,Основная камера 13 МПикс, Android 10, Поддержка стандартов 2G/3G/4G LTE]',7990.00,12,1,123),
