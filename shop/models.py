@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -23,7 +24,28 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
+
 class Order(models.Model):
+
+    class OrderStatus(models.TextChoices):
+        NEW = 'N', _('NEW')
+        CONFIRMED = 'C', _('CONFIRMED')
+        FINISHED = 'F', _('FINISHED')
+        VOID = 'V', _('VOID')
+
     phone = models.CharField(max_length=16)
     email = models.EmailField(max_length=64)
+    address = models.TextField(max_length=256,default='not_stated')
     items = models.JSONField(max_length=128)
+
+    order_status = models.CharField(
+        max_length=1,
+        choices=OrderStatus.choices,
+        default=OrderStatus.VOID,
+    )
+
+    def is_upperclass(self):
+        return self.order_status in {
+            self.OrderStatus.FINISHED,
+            self.OrderStatus.VOID,
+        }
