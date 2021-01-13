@@ -9,7 +9,8 @@ def dbUp(database_name):
             port=int(db_definition['PORT']),
             user=db_definition['USER'],
             passwd=db_definition['PASSWORD'],
-            db=db_definition['NAME'])
+            db=db_definition['NAME'],
+            connect_timeout=1)
         db.close()
         return True
     except Exception as e:
